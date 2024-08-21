@@ -1,0 +1,90 @@
+#pragma once
+
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_image.h>
+#include<iostream>
+
+#include"Grid.h"
+
+namespace jwchess {
+namespace DisplayManager {
+	static SDL_Window*   window		   = nullptr;
+	static SDL_Renderer* renderer	   = nullptr;
+	static SDL_Texture*	 board_texture = nullptr;
+	static SDL_Texture*  pieces_sheet  = nullptr;
+	
+	static Grid::grid*	 s_grid		   = nullptr;
+	static SDL_Rect		 board_rect;
+
+	inline int Init();
+	inline void Render();
+
+	static SDL_Rect getTextureFromImg(SDL_Texture*&, std::string path); //creates texture from and returns dimensions of an image
+}
+
+namespace DisplayManager {
+	static const short int piece_dim = 16;
+	static const short int space_dim = 70;
+	static void RenderBoard(const Grid::grid*);
+}
+}
+
+namespace jwchess {
+namespace DisplayManager {
+	int Init() {
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
+		board_rect = getTextureFromImg(board_texture, "board.png");
+		getTextureFromImg(pieces_sheet, "pieces.png");
+
+		return 1;
+	}
+
+	void Render() {
+		SDL_Rect temp = { 100, 100, 100, 100 };
+
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xA4, 0x74, 0x49);
+		SDL_RenderClear(renderer);
+		RenderBoard(s_grid);
+		SDL_RenderPresent(renderer);
+	}
+
+	SDL_Rect getTextureFromImg(SDL_Texture*& texture, std::string path) {
+		int texture_width, texture_height;
+		std::string texture_name = "../assets/" + path;
+
+		SDL_Surface* tempSurface = IMG_Load(texture_name.c_str());
+		texture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+		SDL_FreeSurface(tempSurface);
+
+		SDL_QueryTexture(texture, nullptr, nullptr, &texture_width, &texture_height);
+		return { 0, 0, texture_width, texture_height };
+	}
+}
+
+namespace DisplayManager {
+	void RenderBoard(const Grid::grid* grid) {
+		int space_index = 0;
+		SDL_Rect space_rect { 0, 0, space_dim, space_dim };
+
+		for (const Grid::space& s : grid->spaces) {
+			Grid::getRowCol(space_index, space_rect.y, space_rect.x);
+			space_rect.x *= space_dim; space_rect.x += 350;
+			space_rect.y *= space_dim; space_rect.y += 25;
+
+			if (space_index % 2 - (space_index / 8) % 2)
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			else
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+
+			SDL_RenderFillRect(renderer, &space_rect);
+
+			SDL_Rect piece_index { (int)s.m_piece.rank * piece_dim, (int)s.m_piece.color * piece_dim, piece_dim, piece_dim };
+			SDL_Rect piece_disp  { space_rect.x + 2, space_rect.y + 2, space_dim - 4, space_dim - 4 };
+			SDL_RenderCopy(renderer, pieces_sheet, &piece_index, &piece_disp);
+
+			space_index++;
+		}
+	}
+}
+
+}
