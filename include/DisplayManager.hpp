@@ -24,7 +24,6 @@ namespace DisplayManager {
 
 namespace DisplayManager {
 	static const short int piece_dim = 16;
-	static const short int space_dim = 70;
 	static void RenderBoard(const Grid::grid*);
 }
 }
@@ -68,18 +67,18 @@ namespace DisplayManager {
 
 		for (const Grid::space& s : grid->spaces) {
 			Grid::getRowCol(space_index, space_rect.y, space_rect.x);
-			space_rect.x *= space_dim; space_rect.x += 350;
-			space_rect.y *= space_dim; space_rect.y += 25;
+			space_rect.x *= space_dim; space_rect.x += 75;
+			space_rect.y *= space_dim; space_rect.y += 75;
 
 			if (space_index % 2 - (space_index / 8) % 2)
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(renderer, 0xA4, 0x74, 0x49, 0xFF);
 			else
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
 			SDL_RenderFillRect(renderer, &space_rect);
 
 			SDL_Rect piece_index { (int)s.m_piece.rank * piece_dim, (int)s.m_piece.color * piece_dim, piece_dim, piece_dim };
-			SDL_Rect piece_disp  { space_rect.x + 2, space_rect.y + 2, space_dim - 4, space_dim - 4 };
+			SDL_Rect piece_disp  { space_rect.x + 4, space_rect.y + 4, space_dim - 8, space_dim - 8 };
 			SDL_RenderCopy(renderer, pieces_sheet, &piece_index, &piece_disp);
 
 			space_index++;

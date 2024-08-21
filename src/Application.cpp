@@ -6,11 +6,16 @@ namespace jwchess {
 	int Init() {
 		SDL_Init(SDL_INIT_EVERYTHING);
 
-        window = SDL_CreateWindow("JW Chess", 200, 60, 1280, 600, SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("JW Chess", 200, 60, 700, 700);
         DisplayManager::window = window;
 
         if (!DisplayManager::Init()) exit(-1);
         DisplayManager::s_grid = &g;
+
+        Grid::move m(g["a2"], g["h5"]);
+        m.act();
+        DisplayManager::Render();
+        m.undo();
 
         return 0;
 	}
