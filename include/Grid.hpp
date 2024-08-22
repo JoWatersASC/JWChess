@@ -71,6 +71,7 @@ namespace Grid{
 		std::set<int> getLegalMoves(const int index);
 		std::set<int> getLegalMoves(const int row, const int col);
 		bool isInCheck();
+		bool isInCheckMate();
 
 		space& operator[](const int index) { return spaces[index]; }
 		space& operator[](const char* c)   { return this->operator[](getSpace(c)); }

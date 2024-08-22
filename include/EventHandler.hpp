@@ -64,7 +64,10 @@ namespace Events {
 				movestk.push(m);
 				s_grid->turn = !s_grid->turn;
 			}
-			s_grid->isInCheck();
+
+			if (s_grid->isInCheck()) {
+				if (s_grid->isInCheckMate()) std::cout << "Game Over";
+			}
 
 			s_grid->selected_space = -1;
 			s_grid->legal_moves.clear();
