@@ -147,6 +147,7 @@ namespace Grid {
 			return isLegalMoveR(m, g, o);
 			break;
 		case pRank::P:
+			return isLegalMoveP(m, g, o);
 			break;
 		default:
 			break;
@@ -183,9 +184,11 @@ namespace Grid {
 			return out;
 		}
 		if (ay + 2 == by || ay - 2 == by) {
-			if (ax + 1 == bx || ax - 1 == bx) out.l = true;
-			out.dist = 3;
-			return out;
+			if (ax + 1 == bx || ax - 1 == bx) {
+				out.l = true;
+				out.dist = 3;
+				return out;
+			}
 		}
 
 		if (out.diagonal) {
@@ -255,17 +258,9 @@ namespace Grid {
 	}
 	bool isLegalMoveP(const move& m, const grid& g, const orientation& o) {
 		if (o.backward || o.horizontal || o.l || o.dist > 2) return false;
+		if (o.diagonal) return m.next.m_state & sState::OCCUPIED && o.dist == 1;
 
-		piece p = m.curr.m_piece;
-		if (p.moved && o.dist > 1) return false;
-		if (o.vertical)
-
-		if (p.color == pCol::B) {
-
-		}
-		else {
-
-		}
+		return (o.dist == 1) || !m.curr.m_piece.moved;
 	}
 }
 }
