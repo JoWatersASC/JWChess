@@ -13,7 +13,7 @@ namespace Events{
 	inline int Init(SDL_Window*, Grid::grid*);
 	inline void Handle(const SDL_Event&, short int&);
 	
-	static void handleBoardClick(int mouse_x, int mouse_y);
+	static void handleBoardClick(int mouse_x, int mouse_y, short int& state);
 	static void handleBoardUndo();
 	static int getIndexFromCoords(int& _x, int& _y);
 	static std::stack<Grid::move> movestk;
@@ -35,13 +35,13 @@ namespace Events {
 			SDL_GetMouseState(&x, &y);
 			if (x < 75 || x > 75 + 8 * space_dim || y < 75 || y > 75 + 8 * space_dim) return;
 
-			handleBoardClick(x, y);
+			handleBoardClick(x, y, state);
 		}
 
 		if (e.type == SDL_KEYDOWN) {
 			switch(state) {
 			case 0:
-				if (e.key.keysym.sym == SDLK_RETURN) state = 1;
+				state = 1;
 				break;
 			case 1:
 				if (e.key.keysym.sym == SDLK_BACKSPACE && !movestk.empty())
@@ -57,7 +57,7 @@ namespace Events {
 		}
 	}
 
-	void handleBoardClick(int mouse_x, int mouse_y) {
+	void handleBoardClick(int mouse_x, int mouse_y, short int& state) {
 		int index = getIndexFromCoords(mouse_x, mouse_y);
 
 		if (!(s_grid->selected_space + 1)) {
@@ -77,13 +77,15 @@ namespace Events {
 			}
 
 			if (s_grid->isInCheck()) {
-				if (s_grid->isInCheckMate()) std::cout << "Game Over, " << (s_grid->turn ? "black" : "white") << " won";
+				if (s_grid->isInCheckMate()) state = 2;
+				else s_grid->isInCheck();
 			}
 
 			s_grid->selected_space = -1;
 			s_grid->legal_moves.clear();
 		}
 	}
+
 	void handleBoardUndo() {
 		movestk.top().undo();
 		movestk.pop();

@@ -10,7 +10,7 @@ set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 set(LIB_DIR     "${CMAKE_SOURCE_DIR}/lib")
 set(SDL_LIB_DIR "${LIB_DIR}/SDL2/x64")
 
-file(GLOB SOURCE_FILES "${SOURCE_DIR}/*.cpp")
+file(GLOB SOURCE_FILES "${SOURCE_DIR}/*.c*")
 file(GLOB INCLUDE_FILES "${INCLUDE_DIR}/*.h*")
 
 link_directories(${SDL_LIB_DIR})
