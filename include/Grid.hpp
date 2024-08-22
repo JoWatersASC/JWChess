@@ -60,14 +60,18 @@ namespace Grid{
 	struct grid {
 		space spaces[64];
 		bool turn; //true if white, false if black's turn
+		bool inCheck; //true if turn color is in check
 
 		short int selected_space = -1;
+		short int check_space = -1;
 		std::set<int> legal_moves;
 
 		grid();
 
 		std::set<int> getLegalMoves(const int index);
 		std::set<int> getLegalMoves(const int row, const int col);
+		bool isInCheck();
+
 		space& operator[](const int index) { return spaces[index]; }
 		space& operator[](const char* c)   { return this->operator[](getSpace(c)); }
 	};

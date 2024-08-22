@@ -63,6 +63,7 @@ namespace Events {
 				m.act();
 				(*s_grid).turn = !(*s_grid).turn;
 				movestk.push(m);
+				if(s_grid->isInCheck()) (*s_grid).turn = !(*s_grid).turn;
 			}
 
 			s_grid->selected_space = -1;
