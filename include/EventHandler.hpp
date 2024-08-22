@@ -2,8 +2,10 @@
 
 #include<SDL2/SDL.h>
 #include"Grid.hpp"
+#include"DisplayManager.hpp"
 
 namespace jwchess {
+//Forward Declarations
 namespace Events{
 	static SDL_Window* window = nullptr;
 	static Grid::grid* s_grid = nullptr;
@@ -16,7 +18,7 @@ namespace Events{
 	static std::stack<Grid::move> movestk;
 }
 
-
+//Implementations
 namespace Events {
 	int Init(SDL_Window* _window, Grid::grid* _grid) {
 		window = _window;
@@ -32,7 +34,7 @@ namespace Events {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 			if (x < 75 || x > 75 + 8 * space_dim || y < 75 || y > 75 + 8 * space_dim) return;
-			
+
 			HandleBoardClick(x, y);
 		}
 
@@ -44,11 +46,13 @@ namespace Events {
 		}
 	}
 
-	static void HandleBoardClick(int mouse_x, int mouse_y) {
+	void HandleBoardClick(int mouse_x, int mouse_y) {
 		int index = getIndexFromCoords(mouse_x, mouse_y);
 
 		if (!(s_grid->selected_space + 1)) {
 			s_grid->selected_space = index;
+			s_grid->getLegalMoves(index);
+			
 			s_grid->operator[](index).m_state -= Grid::sState::INACTIVE;
 			s_grid->operator[](index).m_state |= Grid::sState::SELECTED;
 		}
@@ -62,6 +66,7 @@ namespace Events {
 			}
 
 			s_grid->selected_space = -1;
+			s_grid->legal_moves.clear();
 		}
 	}
 	int getIndexFromCoords(int& _x, int& _y) {

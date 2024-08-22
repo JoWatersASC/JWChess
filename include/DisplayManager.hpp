@@ -72,7 +72,9 @@ namespace DisplayManager {
 			space_rect.y *= space_dim; space_rect.y += 75;
 
 			if(space_index == grid->selected_space)
-				SDL_SetRenderDrawColor(renderer, 0xCB, 0xD3, 0x40, 0xAF);
+				SDL_SetRenderDrawColor(renderer, 0xCB, 0xD3, 0x40, 0xFF);
+			else if(grid->legal_moves.count(space_index))
+				SDL_SetRenderDrawColor(renderer, 0x18, 0xCE, 0xC9, 0xFF);
 			else if (space_index % 2 - (space_index / 8) % 2)
 				SDL_SetRenderDrawColor(renderer, 0xA4, 0x74, 0x49, 0xFF);
 			else
