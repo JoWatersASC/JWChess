@@ -76,6 +76,7 @@ namespace Grid{
 		space& operator[](const char* c)   { return this->operator[](getSpace(c)); }
 	};
 
-	bool isLegalMove(const move&, const grid&);
+	bool isLegalMove(move&, grid&);
+	bool isLegalMoveCheck(move&, grid&);
 }
 }
