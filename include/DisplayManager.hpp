@@ -2,12 +2,15 @@
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
+#include<SDL2/SDL_test_font.h>
 #include<iostream>
 
 #include"Grid.hpp"
 
 namespace jwchess {
 namespace DisplayManager {
+#define SCREEN_DIM 700
+
 	static SDL_Window*   window		   = nullptr;
 	static SDL_Renderer* renderer	   = nullptr;
 	static SDL_Texture*	 board_texture = nullptr;
@@ -24,9 +27,9 @@ namespace DisplayManager {
 
 namespace DisplayManager {
 	static const short int piece_dim = 16;
-	static void RenderStart();
-	static void RenderBoard(const Grid::grid*);
-	static void RenderGameOver();
+	static void RenderStartScreen();
+	static void RenderBoardScreen(const Grid::grid*);
+	static void RenderGameOverScreen();
 }
 }
 
@@ -42,18 +45,18 @@ namespace DisplayManager {
 	}
 
 	void Render(short int& state) {
-		SDL_Rect temp = { 100, 100, 100, 100 };
-
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xA4, 0x74, 0x49);
 		SDL_RenderClear(renderer);
 
 		switch (state) {
 		case 0:
+			RenderStartScreen();
 			break;
 		case 1:
-			RenderBoard(s_grid);
+			RenderBoardScreen(s_grid);
 			break;
 		case 2:
+			RenderGameOverScreen();
 			break;
 		default:
 			break;
@@ -76,9 +79,24 @@ namespace DisplayManager {
 }
 
 namespace DisplayManager {
-	void RenderStart(){}
+	void RenderStartScreen() {
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
 
-	void RenderBoard(const Grid::grid* grid) {
+		// Set text color (using the renderer's draw color)
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+		// Render the title using the SDL test font
+		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, "Chess Game");
+
+		// Render the instruction
+		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 80, SCREEN_DIM/ 2, "Press any key to start");
+
+		// Update the screen
+		SDL_RenderPresent(renderer);
+	}
+
+	void RenderBoardScreen(const Grid::grid* grid) {
 		int space_index = 0;
 		SDL_Rect space_rect { 0, 0, space_dim, space_dim };
 
@@ -108,7 +126,22 @@ namespace DisplayManager {
 		}
 	}
 
-	void RenderGameOver(){}
-}
+	void RenderGameOverScreen() {
+		std::string result = s_grid->turn ? "Game Over Black Wins!" : "Game Over White Wins!";
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
 
+		// Set text color (using the renderer's draw color)
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+		// Render the "Game Over" text
+		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, result.c_str());
+
+		// Render the instruction to restart or quit
+		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 150, SCREEN_DIM / 2, "Press 'Enter' key to play again");
+
+		// Update the screen
+		SDL_RenderPresent(renderer);
+	}
+}
 }
