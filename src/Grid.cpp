@@ -192,7 +192,7 @@ namespace Grid {
 		}
 
 		if (out.diagonal) {
-			out.dist = bx - ax;
+			out.dist = abs(bx - ax);
 		}
 		if (out.horizontal) {
 			out.dist = abs(bx - ax);
