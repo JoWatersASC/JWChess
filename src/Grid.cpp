@@ -94,6 +94,38 @@ namespace Grid{
 		legal_moves = out;
 		return out;
 	}
+	bool grid::isInCheck() {
+		pCol _turn = (turn) ? pCol::W : pCol::B;
+		space* king = &spaces[0];
+		int king_space = -1;
+
+		for (int i = 0; i < 64; i++) {
+			space* space = &spaces[i];
+			auto space_p = space->m_piece;
+
+			if (space_p.color == _turn && space_p.rank == pRank::K) {
+				king = space;
+				king_space = i;
+				break;
+			}
+		}
+		for (int i = 0; i < 64; i++) {
+			space& space = spaces[i];
+			if (space.m_state & sState::VACANT || space.m_piece.color == _turn) continue;
+			move m(space, *king);
+
+			turn = !turn;
+			if (isLegalMove(m, *this)) {
+				check_space = king_space;
+				return true;
+			}
+			turn = !turn;
+		}
+
+		check_space = -1;
+		return false;
+	}
+
 
 	int getSpace(int _row, int _col) {
 		return _row * 8 + _col;
@@ -228,17 +260,17 @@ namespace Grid {
 
 		if (o.vertical) {
 			row += (row < dest_row) ? 1 : -1;
-			do {
+			while (row != dest_row) {
 				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
 				if(row != dest_row) row += (row < dest_row) ? 1 : -1;
-			} while (row != dest_row);
+			}
 		}
 		else if (o.horizontal) {
 			col += (col < dest_col) ? 1 : -1;
-			do {
+			while (col != dest_col) {
 				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
 				if(col != dest_col) col += (col < dest_col) ? 1 : -1;
-			} while (col < dest_col);
+			}
 		}
 
 		return true;
@@ -257,13 +289,15 @@ namespace Grid {
 
 		row += (row < dest_row) ? 1 : -1;
 		col += (col < dest_col) ? 1 : -1;
-		do {
+		while (row != dest_row && col != dest_col) {
 			const space& s = g.spaces[getSpace(row, col)];
 			if (s.m_state & sState::OCCUPIED)
 				return false;
-			row += (row < dest_row) ? 1 : -1;
-			col += (col < dest_col) ? 1 : -1;
-		} while (row != dest_row && col != dest_col);
+			if (row != dest_row && col != dest_col) {
+				row += (row < dest_row) ? 1 : -1;
+				col += (col < dest_col) ? 1 : -1;
+			}
+		}
 
 		return true;
 	}
@@ -271,7 +305,7 @@ namespace Grid {
 		if (o.backward || o.horizontal || o.l || o.dist > 2) return false;
 		if (o.diagonal) return m.next.m_state & sState::OCCUPIED && o.dist == 1;
 
-		return (o.dist == 1) || !m.curr.m_piece.moved;
+		return ((o.dist == 1) || !m.curr.m_piece.moved) && !(m.next.m_state & sState::OCCUPIED);
 	}
 }
 }
