@@ -34,15 +34,21 @@ namespace Events {
 			
 			int index = getIndexFromCoords(x, y);
 
-			if (!(s_grid->selected_space + 1))
+			if (!(s_grid->selected_space + 1)) {
 				s_grid->selected_space = index;
+				s_grid->operator[](index).m_state -= Grid::sState::INACTIVE;
+				s_grid->operator[](index).m_state |= Grid::sState::SELECTED;
+			}
 			else {
 				Grid::move m((*s_grid)[s_grid->selected_space], (*s_grid)[index]);
-				//if m is accepted
-				bool p = Grid::isLegalMove(m, *s_grid);
-				m.act();
+
+				if(Grid::isLegalMove(m, *s_grid)) {
+					m.act();
+					(*s_grid).turn = !(*s_grid).turn;
+					movestk.push(m);
+				}
+
 				s_grid->selected_space = -1;
-				movestk.push(m);
 			}
 		}
 

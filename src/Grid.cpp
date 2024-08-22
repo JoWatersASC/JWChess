@@ -40,7 +40,7 @@ namespace Grid {
 		next = destination;
 	}
 
-	grid::grid() : turn(pCol::W) {
+	grid::grid() : turn(true) {
 		for (int i = 0; i < 64; i++) {
 			spaces[i] = space(i / 8, i % 8);
 
@@ -129,6 +129,7 @@ namespace Grid {
 
 	bool isLegalMove(const move& m, const grid& g) {
 		if (m.curr.m_piece.color == m.next.m_piece.color && (m.next.m_state & sState::OCCUPIED)) return false;
+		if ((int)m.curr.m_piece.color != g.turn) return false;
 		orientation o = getOrientation(m.curr, m.next);
 
 		switch (m.curr.m_piece.rank) {
@@ -136,6 +137,7 @@ namespace Grid {
 			return isLegalMoveK(m, g, o);
 			break;
 		case pRank::Q:
+			return isLegalMoveQ(m, g, o);
 			break;
 		case pRank::B:
 			return isLegalMoveB(m, g, o);
@@ -221,16 +223,18 @@ namespace Grid {
 		int dest_col = m.destination.col;
 
 		if (o.vertical) {
-			while (row != dest_row) {
-				if (g.spaces[getSpace(row, col)].m_state == sState::OCCUPIED) return false;
+			row += (row < dest_row) ? 1 : -1;
+			do {
+				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
 				row += (row < dest_row) ? 1 : -1;
-			}
+			} while (row != dest_row);
 		}
 		else if (o.horizontal) {
-			while (col < dest_col) {
-				if (g.spaces[getSpace(row, col)].m_state == sState::OCCUPIED) return false;
+			col += (col < dest_col) ? 1 : -1;
+			do {
+				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
 				col += (col < dest_col) ? 1 : -1;
-			}
+			} while (col < dest_col);
 		}
 
 		return true;
@@ -244,15 +248,18 @@ namespace Grid {
 		int row = m.curr.row;
 		int col = m.curr.col;
 
-		int dest_row = m.destination.row;
-		int dest_col = m.destination.col;
+		int dest_row = m.next.row;
+		int dest_col = m.next.col;
 
-		while (row != dest_row && col != dest_col) {
-			space s = g.spaces[getSpace(row, col)];
-			if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
+		row += (row < dest_row) ? 1 : -1;
+		col += (col < dest_col) ? 1 : -1;
+		do {
+			const space& s = g.spaces[getSpace(row, col)];
+			if (s.m_state & sState::OCCUPIED)
+				return false;
 			row += (row < dest_row) ? 1 : -1;
 			col += (col < dest_col) ? 1 : -1;
-		}
+		} while (row != dest_row && col != dest_col);
 
 		return true;
 	}
