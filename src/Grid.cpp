@@ -1,87 +1,246 @@
-#include"Grid.h"
+#include"Grid.hpp"
 
 namespace jwchess {
-namespace Grid{
-	void move::act() {
-		if (curr.m_state & sState::VACANT/* || curr.m_state & sState::INACTIVE*/) return;
+namespace Grid {
+		struct orientation {
+			bool diagonal = false;
+			bool horizontal = false;
+			bool vertical = false;
+			bool l = false;
 
-		next.m_piece = curr.m_piece;
-		curr.m_piece = piece();
+			int dist;
+		};
 
-		next.m_state = sState::OCCUPIED | sState::INACTIVE;
-		curr.m_state = sState::VACANT   | sState::INACTIVE;
-	}
-	void move::undo() {
-		curr = origin;
-		next = destination;
-	}
+		orientation getOrientation(const space& a, const space& b);
+		bool isLegalMoveK(const move& m, const grid& g, const orientation& o);
+		bool isLegalMoveQ(const move& m, const grid& g, const orientation& o);
+		bool isLegalMoveR(const move& m, const grid& g, const orientation& o);
+		bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
+		bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
+		bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
 
-	grid::grid() : turn(pCol::W) {
-		for (int i = 0; i < 64; i++) {
-			piece p;
+		void move::act() {
+			if (curr.m_state & sState::VACANT || &curr == &next) return;
 
-			if (i < 8 || i >= 56 ) {
-				if (i % 8 == 0 || i % 8 == 7) p.rank = pRank::R;
-				else if (i % 8 == 1 || i % 8 == 6) p.rank = pRank::N;
-				else if (i % 8 == 2 || i % 8 == 5) p.rank = pRank::B;
-				else if (i % 8 == 3) p.rank = pRank::K;
-				else if (i % 8 == 4) p.rank = pRank::Q;
-				spaces[i].m_state |= sState::OCCUPIED;
-			}
-			else if (i < 16 || i >= 48) {
-				p.rank = pRank::P;
-				spaces[i].m_state |= sState::OCCUPIED;
-			}
-			else {
-				spaces[i].m_state |= sState::VACANT;
-			}
+			next.m_piece = curr.m_piece;
+			next.m_piece.moved = true;
+			curr.m_piece = piece();
 
-			if (i < 16) p.color = pCol::B;
-			else p.color = pCol::W;
-
-			spaces[i] = space(i / 8, i % 8, p);
-			spaces[i].m_state |= sState::INACTIVE;
+			next.m_state = sState::OCCUPIED | sState::INACTIVE;
+			curr.m_state = sState::VACANT | sState::INACTIVE;
 		}
-	}
+		void move::undo() {
+			curr = origin;
+			next = destination;
+		}
 
-	std::vector<space> grid::getLegalMoves(const int space_index) {
-		return {};
-	}
+		grid::grid() : turn(pCol::W) {
+			for (int i = 0; i < 64; i++) {
+				spaces[i] = space(i / 8, i % 8);
 
-	int getSpace(int _row, int _col) {
-		return _row * 8 + _col;
-	}
-	int getSpace(const char* c) {
-		int row, col;
-		getRowCol(c, row, col);
-		return getSpace(row, col);
-	}
-	void getRowCol(int space_index, int& _row, int& _col) {
-		if (space_index > 63 || space_index < 0) return;
+				piece& p = spaces[i].m_piece;
+				if (i < 16) p.color = pCol::B;
+				else p.color = pCol::W;
 
-		_row = space_index / 8;
-		_col = space_index % 8;
-	}
-	void getRowCol(const char* c, int& _row, int& _col) {
-		int index = 0;
 
-		while (c) {
-			switch (index) {
-			case 0:
-				if (*c < 'a' || *c > 'h') return;
-				_col = *c - 'a';
+
+				if (i < 8 || i >= 56) {
+					if (i % 8 == 0 || i % 8 == 7) p.rank = pRank::R;
+					else if (i % 8 == 1 || i % 8 == 6) p.rank = pRank::N;
+					else if (i % 8 == 2 || i % 8 == 5) p.rank = pRank::B;
+					else if (i % 8 == 3) p.rank = pRank::K;
+					else if (i % 8 == 4) p.rank = pRank::Q;
+					spaces[i].m_state |= sState::OCCUPIED;
+				}
+				else if (i < 16 || i >= 48) {
+					p.rank = pRank::P;
+					spaces[i].m_state |= sState::OCCUPIED;
+				}
+				else {
+					spaces[i].m_state |= sState::VACANT;
+				}
+
+				spaces[i].m_state |= sState::INACTIVE;
+			}
+		}
+
+		std::vector<space> grid::getLegalMoves(const int row, const int col) {
+			const space s = spaces[getSpace(row, col)];
+			pRank rank = s.m_piece.rank;
+			pCol color = s.m_piece.color;
+			bool pMoved = s.m_piece.moved;
+			std::vector<space> out;
+
+
+			if (rank == pRank::P) {
+				space forw_right;
+				space forw_left;
+				if (color == pCol::B) {
+					forw_right = col % 8 < 1 ? space() : spaces[getSpace(row + 1, col - 1)];
+					forw_left = col % 8 > 6 ? space() : spaces[getSpace(row + 1, col + 1)];
+
+
+				}
+			}
+			return {};
+		}
+
+		int getSpace(int _row, int _col) {
+			return _row * 8 + _col;
+		}
+		int getSpace(const char* c) {
+			int row, col;
+			getRowCol(c, row, col);
+			return getSpace(row, col);
+		}
+		void getRowCol(int space_index, int& _row, int& _col) {
+			if (space_index > 63 || space_index < 0) return;
+
+			_row = space_index / 8;
+			_col = space_index % 8;
+		}
+		void getRowCol(const char* c, int& _row, int& _col) {
+			int index = 0;
+
+			while (c) {
+				switch (index) {
+				case 0:
+					if (*c < 'a' || *c > 'h') return;
+					_col = *c - 'a';
+					break;
+				case 1:
+					if (*c < '1' || *c > '8') return;
+					_row = *c - '1';
+					break;
+				default:
+					return;
+				}
+
+				index++;
+				c++;
+			}
+		}
+
+		bool isLegalMove(const move& m, const grid& g) {
+			if (m.curr.m_piece.color == m.next.m_piece.color) return false;
+			orientation o = getOrientation(m.curr, m.next);
+
+			switch (m.curr.m_piece.rank) {
+			case pRank::K:
+				return isLegalMoveK(m, g, o);
 				break;
-			case 1:
-				if (*c < '1' || *c > '8') return;
-				_row = *c - '1';
+			case pRank::Q:
+				break;
+			case pRank::B:
+				return isLegalMoveB(m, g, o);
+				break;
+			case pRank::N:
+				return isLegalMoveN(m, g, o);
+				break;
+			case pRank::R:
+				return isLegalMoveR(m, g, o);
+				break;
+			case pRank::P:
 				break;
 			default:
-				return;
+				break;
 			}
 
-			index++;
-			c++;
+			return false;
 		}
+	}
+
+
+namespace Grid {
+		orientation getOrientation(const space& a, const space& b) {
+#include<math.h>
+
+			orientation out;
+			int ax, ay, bx, by;
+			ax = a.col; ay = a.row;
+			bx = b.col; by = b.row;
+
+			if (abs(bx - ax) == abs(by - ay)) out.diagonal = true;
+			if (ax == bx && ay != by) out.vertical = true;
+			if (ay == by && ax != bx) out.horizontal = true;
+			if (ax + 2 == bx || ax - 2 == bx) {
+				if (ay + 1 == by || ay - 1 == by) out.l = true;
+				out.dist = 3;
+				return out;
+			}
+			if (ay + 2 == by || ay - 2 == by) {
+				if (ax + 1 == bx || ax - 1 == bx) out.l = true;
+				out.dist = 3;
+				return out;
+			}
+
+			if (out.diagonal) {
+				out.dist = bx - ax;
+			}
+			if (out.horizontal) {
+				out.dist = abs(bx - ax);
+			}
+			if (out.vertical) {
+				out.dist = abs(by - ay);
+			}
+
+			return out;
+		}
+	
+
+	static bool isLegalMoveK(const move& m, const grid& g, const orientation& o) {
+		if (o.dist > 1) return false;
+		return true;
+	}
+	static bool isLegalMoveQ(const move& m, const grid& g, const orientation& o) {
+		if (!o.diagonal && !o.horizontal && !o.vertical) return false;
+		return isLegalMoveB(m, g, o) || isLegalMoveR(m, g, o);
+	}
+	static bool isLegalMoveR(const move& m, const grid& g, const orientation& o) {
+		if (!o.horizontal && !o.vertical) return false;
+		int row = m.curr.row;
+		int col = m.curr.col;
+
+		int dest_row = m.destination.row;
+		int dest_col = m.destination.col;
+
+		if (o.vertical) {
+			while (row != dest_row) {
+				if (g.spaces[getSpace(row, col)].m_state == sState::OCCUPIED) return false;
+				row += (row < dest_row) ? 1 : -1;
+			}
+		}
+		else if (o.horizontal) {
+			while (col < dest_col) {
+				if (g.spaces[getSpace(row, col)].m_state == sState::OCCUPIED) return false;
+				col += (col < dest_col) ? 1 : -1;
+			}
+		}
+
+		return true;
+	}
+	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o) {
+		if (o.l) return true;
+		return false;
+	}
+	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o) {
+		if (!o.diagonal) return false;
+		int row = m.curr.row;
+		int col = m.curr.col;
+
+		int dest_row = m.destination.row;
+		int dest_col = m.destination.col;
+
+		while (row != dest_row && col != dest_col) {
+			space s = g.spaces[getSpace(row, col)];
+			if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
+			row += (row < dest_row) ? 1 : -1;
+			col += (col < dest_col) ? 1 : -1;
+		}
+
+		return true;
+	}
+	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o) {
 	}
 }
 }
