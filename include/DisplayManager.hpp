@@ -4,7 +4,7 @@
 #include<SDL2/SDL_image.h>
 #include<iostream>
 
-#include"Grid.h"
+#include"Grid.hpp"
 
 namespace jwchess {
 namespace DisplayManager {
@@ -16,7 +16,7 @@ namespace DisplayManager {
 	static Grid::grid*	 s_grid		   = nullptr;
 	static SDL_Rect		 board_rect;
 
-	inline int Init();
+	inline int Init(SDL_Window*);
 	inline void Render();
 
 	static SDL_Rect getTextureFromImg(SDL_Texture*&, std::string path); //creates texture from and returns dimensions of an image
@@ -30,7 +30,8 @@ namespace DisplayManager {
 
 namespace jwchess {
 namespace DisplayManager {
-	int Init() {
+	int Init(SDL_Window* _window) {
+		window = _window;
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 		board_rect = getTextureFromImg(board_texture, "board.png");
 		getTextureFromImg(pieces_sheet, "pieces.png");
