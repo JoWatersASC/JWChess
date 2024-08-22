@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include<set>
 #include<stack>
 
 namespace jwchess {
@@ -58,15 +59,15 @@ namespace Grid{
 
 	struct grid {
 		space spaces[64];
-		pCol turn;
+		bool turn; //true if white, false if black's turn
 
 		short int selected_space = -1;
-		std::stack<move> moves;
-		std::vector<space> legal_moves;
+		std::set<int> legal_moves;
 
 		grid();
 
-		std::vector<space> getLegalMoves(const int row, const int col);
+		std::set<int> getLegalMoves(const int index);
+		std::set<int> getLegalMoves(const int row, const int col);
 		space& operator[](const int index) { return spaces[index]; }
 		space& operator[](const char* c)   { return this->operator[](getSpace(c)); }
 	};
