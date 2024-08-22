@@ -1,6 +1,7 @@
 #include"Grid.hpp"
 
 namespace jwchess {
+//Forward Declarations
 namespace Grid {
 	namespace {
 	struct orientation {
@@ -24,7 +25,11 @@ namespace Grid {
 	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
+	static bool isInCheck();
+}
 
+//Member function implementation
+namespace Grid{
 	void move::act() {
 		if (curr.m_state & sState::VACANT || &curr == &next) return;
 
@@ -70,25 +75,24 @@ namespace Grid {
 		}
 	}
 
-	std::vector<space> grid::getLegalMoves(const int row, const int col) {
-		const space s = spaces[getSpace(row, col)];
-		pRank rank = s.m_piece.rank;
-		pCol color = s.m_piece.color;
-		bool pMoved = s.m_piece.moved;
-		std::vector<space> out;
+	std::set<int> grid::getLegalMoves(const int index) {
+		int row, col;
+		getRowCol(index, row, col);
+		return getLegalMoves(row, col);
+	}
+	std::set<int> grid::getLegalMoves(const int row, const int col) {
+		space& s = spaces[getSpace(row, col)];
+		std::set<int> out;
 
+		for (int i = 0; i < 64; i++) {
+			space& next = spaces[i];
+			const move m(s, next);
 
-		if (rank == pRank::P) {
-			space forw_right;
-			space forw_left;
-			if (color == pCol::B) {
-				forw_right = col % 8 < 1 ? space() : spaces[getSpace(row + 1, col - 1)];
-				forw_left = col % 8 > 6 ? space() : spaces[getSpace(row + 1, col + 1)];
-
-
-			}
+			if (isLegalMove(m, *this)) out.insert(i);
 		}
-		return {};
+
+		legal_moves = out;
+		return out;
 	}
 
 	int getSpace(int _row, int _col) {
@@ -159,7 +163,7 @@ namespace Grid {
 	}
 }
 
-
+//Static function implementation
 namespace Grid {
 	orientation getOrientation(const space& a, const space& b) {
 #include<math.h>
