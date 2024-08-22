@@ -14,7 +14,7 @@ namespace Grid {
 		bool diagonal	= false;
 		bool l			= false;
 
-		int dist;
+		short int dist  = 3;
 	};
 	}
 
