@@ -11,11 +11,10 @@ namespace Events{
 	static Grid::grid* s_grid = nullptr;
 
 	inline int Init(SDL_Window*, Grid::grid*);
-	inline void Handle(const SDL_Event&);
+	inline void Handle(const SDL_Event&, short int&);
 	
 	static void handleBoardClick(int mouse_x, int mouse_y);
 	static void handleBoardUndo();
-	static void updateBoard();
 	static int getIndexFromCoords(int& _x, int& _y);
 	static std::stack<Grid::move> movestk;
 }
@@ -30,9 +29,8 @@ namespace Events {
 		return 1;
 	}
 
-	void Handle(const SDL_Event& e) {
-		//350 + 8 * space_dim;
-		if (e.type == SDL_MOUSEBUTTONDOWN) {
+	void Handle(const SDL_Event& e, short int& state) {
+		if (e.type == SDL_MOUSEBUTTONDOWN && state == 1) {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 			if (x < 75 || x > 75 + 8 * space_dim || y < 75 || y > 75 + 8 * space_dim) return;
@@ -41,9 +39,21 @@ namespace Events {
 		}
 
 		if (e.type == SDL_KEYDOWN) {
-			if (e.key.keysym.sym == SDLK_BACKSPACE && !movestk.empty()) {
-				handleBoardUndo();
+			switch(state) {
+			case 0:
+				if (e.key.keysym.sym == SDLK_RETURN) state = 1;
+				break;
+			case 1:
+				if (e.key.keysym.sym == SDLK_BACKSPACE && !movestk.empty())
+					handleBoardUndo();
+				break;
+			case 2:
+				if (e.key.keysym.sym == SDLK_RETURN) state = 1;
+				break;
+			default:
+				break;
 			}
+			
 		}
 	}
 

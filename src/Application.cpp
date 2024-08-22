@@ -14,11 +14,6 @@ namespace jwchess {
         DisplayManager::s_grid = &g;
         DisplayManager::window = window;
 
-        Grid::move m(g["a2"], g["h5"]);
-        m.act();
-        DisplayManager::Render();
-        m.undo();
-
         return 0;
 	}
 
@@ -26,9 +21,11 @@ namespace jwchess {
         bool running = true;
 
         SDL_Event e;
+        short int state = 0;
+
         while (running) {
             while (SDL_PollEvent(&e)) {
-                Events::Handle(e);
+                Events::Handle(e, state);
 
                 if (e.type == SDL_QUIT) {
                     running = false;
@@ -39,7 +36,7 @@ namespace jwchess {
                 }
             }
 
-            DisplayManager::Render();
+            DisplayManager::Render(state);
         }
 	}
 }

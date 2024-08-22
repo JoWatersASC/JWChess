@@ -17,14 +17,16 @@ namespace DisplayManager {
 	static SDL_Rect		 board_rect;
 
 	inline int Init(SDL_Window*);
-	inline void Render();
+	inline void Render(short int&);
 
 	static SDL_Rect getTextureFromImg(SDL_Texture*&, std::string path); //creates texture from and returns dimensions of an image
 }
 
 namespace DisplayManager {
 	static const short int piece_dim = 16;
+	static void RenderStart();
 	static void RenderBoard(const Grid::grid*);
+	static void RenderGameOver();
 }
 }
 
@@ -39,12 +41,24 @@ namespace DisplayManager {
 		return 1;
 	}
 
-	void Render() {
+	void Render(short int& state) {
 		SDL_Rect temp = { 100, 100, 100, 100 };
 
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xA4, 0x74, 0x49);
 		SDL_RenderClear(renderer);
-		RenderBoard(s_grid);
+
+		switch (state) {
+		case 0:
+			break;
+		case 1:
+			RenderBoard(s_grid);
+			break;
+		case 2:
+			break;
+		default:
+			break;
+		}
+		
 		SDL_RenderPresent(renderer);
 	}
 
@@ -62,6 +76,8 @@ namespace DisplayManager {
 }
 
 namespace DisplayManager {
+	void RenderStart(){}
+
 	void RenderBoard(const Grid::grid* grid) {
 		int space_index = 0;
 		SDL_Rect space_rect { 0, 0, space_dim, space_dim };
@@ -91,6 +107,8 @@ namespace DisplayManager {
 			space_index++;
 		}
 	}
+
+	void RenderGameOver(){}
 }
 
 }
