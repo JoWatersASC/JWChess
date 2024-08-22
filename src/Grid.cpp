@@ -230,14 +230,14 @@ namespace Grid {
 			row += (row < dest_row) ? 1 : -1;
 			do {
 				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
-				row += (row < dest_row) ? 1 : -1;
+				if(row != dest_row) row += (row < dest_row) ? 1 : -1;
 			} while (row != dest_row);
 		}
 		else if (o.horizontal) {
 			col += (col < dest_col) ? 1 : -1;
 			do {
 				if (g.spaces[getSpace(row, col)].m_state & sState::OCCUPIED) return false;
-				col += (col < dest_col) ? 1 : -1;
+				if(col != dest_col) col += (col < dest_col) ? 1 : -1;
 			} while (col < dest_col);
 		}
 
