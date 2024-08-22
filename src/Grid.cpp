@@ -18,12 +18,12 @@ namespace Grid {
 	}
 
 	orientation getOrientation(const space& a, const space& b);
-	bool isLegalMoveK(const move& m, const grid& g, const orientation& o);
-	bool isLegalMoveQ(const move& m, const grid& g, const orientation& o);
-	bool isLegalMoveR(const move& m, const grid& g, const orientation& o);
-	bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
-	bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
-	bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveK(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveQ(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveR(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
+	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
 
 	void move::act() {
 		if (curr.m_state & sState::VACANT || &curr == &next) return;
@@ -128,7 +128,7 @@ namespace Grid {
 	}
 
 	bool isLegalMove(const move& m, const grid& g) {
-		if (m.curr.m_piece.color == m.next.m_piece.color) return false;
+		if (m.curr.m_piece.color == m.next.m_piece.color && (m.next.m_state & sState::OCCUPIED)) return false;
 		orientation o = getOrientation(m.curr, m.next);
 
 		switch (m.curr.m_piece.rank) {
@@ -166,6 +166,14 @@ namespace Grid {
 		ax = a.col; ay = a.row;
 		bx = b.col; by = b.row;
 
+		if (a.m_state & sState::VACANT);
+		else {
+			piece p = a.m_piece;
+			out.forward  = (p.color == pCol::B) ? ay < by : ay > by;
+			out.backward = (p.color == pCol::B) ? ay > by : ay < by;
+			out.left	 = (p.color == pCol::B) ? ax < bx : ax > bx;
+			out.right	 = (p.color == pCol::B) ? ax > bx : ax < bx;
+		}
 		if (abs(bx - ax) == abs(by - ay)) out.diagonal = true;
 		if (ax == bx && ay != by) out.vertical = true;
 		if (ay == by && ax != bx) out.horizontal = true;
@@ -193,15 +201,15 @@ namespace Grid {
 		return out;
 	}
 	
-	static bool isLegalMoveK(const move& m, const grid& g, const orientation& o) {
+	bool isLegalMoveK(const move& m, const grid& g, const orientation& o) {
 		if (o.dist > 1) return false;
 		return true;
 	}
-	static bool isLegalMoveQ(const move& m, const grid& g, const orientation& o) {
+	bool isLegalMoveQ(const move& m, const grid& g, const orientation& o) {
 		if (!o.diagonal && !o.horizontal && !o.vertical) return false;
 		return isLegalMoveB(m, g, o) || isLegalMoveR(m, g, o);
 	}
-	static bool isLegalMoveR(const move& m, const grid& g, const orientation& o) {
+	bool isLegalMoveR(const move& m, const grid& g, const orientation& o) {
 		if (!o.horizontal && !o.vertical) return false;
 		int row = m.curr.row;
 		int col = m.curr.col;
@@ -224,11 +232,11 @@ namespace Grid {
 
 		return true;
 	}
-	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o) {
+	bool isLegalMoveN(const move& m, const grid& g, const orientation& o) {
 		if (o.l) return true;
 		return false;
 	}
-	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o) {
+	bool isLegalMoveB(const move& m, const grid& g, const orientation& o) {
 		if (!o.diagonal) return false;
 		int row = m.curr.row;
 		int col = m.curr.col;
@@ -245,12 +253,12 @@ namespace Grid {
 
 		return true;
 	}
-	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o) {
-		if (o.horizontal || o.l || o.dist > 2) return false;
+	bool isLegalMoveP(const move& m, const grid& g, const orientation& o) {
+		if (o.backward || o.horizontal || o.l || o.dist > 2) return false;
 
 		piece p = m.curr.m_piece;
 		if (p.moved && o.dist > 1) return false;
-		if (o.vertical);
+		if (o.vertical)
 
 		if (p.color == pCol::B) {
 
