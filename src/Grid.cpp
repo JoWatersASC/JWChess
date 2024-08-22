@@ -25,7 +25,6 @@ namespace Grid {
 	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
-	static bool isInCheck();
 }
 
 //Member function implementation
@@ -45,7 +44,7 @@ namespace Grid{
 		next = destination;
 	}
 
-	grid::grid() : turn(true) {
+	grid::grid() : turn(true), inCheck(false) {
 		for (int i = 0; i < 64; i++) {
 			spaces[i] = space(i / 8, i % 8);
 
@@ -86,7 +85,7 @@ namespace Grid{
 
 		for (int i = 0; i < 64; i++) {
 			space& next = spaces[i];
-			const move m(s, next);
+			move m(s, next);
 
 			if (isLegalMove(m, *this)) out.insert(i);
 		}
@@ -117,6 +116,7 @@ namespace Grid{
 			turn = !turn;
 			if (isLegalMove(m, *this)) {
 				check_space = king_space;
+				turn = !turn;
 				return true;
 			}
 			turn = !turn;
@@ -163,10 +163,50 @@ namespace Grid{
 		}
 	}
 
-	bool isLegalMove(const move& m, const grid& g) {
+	bool isLegalMove(move& m, grid& g) {
 		if (m.curr.m_piece.color == m.next.m_piece.color && (m.next.m_state & sState::OCCUPIED)) return false;
 		if ((int)m.curr.m_piece.color != g.turn) return false;
 		orientation o = getOrientation(m.curr, m.next);
+
+		switch (m.curr.m_piece.rank) {
+		case pRank::K:
+			return isLegalMoveK(m, g, o);
+			break;
+		case pRank::Q:
+			return isLegalMoveQ(m, g, o);
+			break;
+		case pRank::B:
+			return isLegalMoveB(m, g, o);
+			break;
+		case pRank::N:
+			return isLegalMoveN(m, g, o);
+			break;
+		case pRank::R:
+			return isLegalMoveR(m, g, o);
+			break;
+		case pRank::P:
+			return isLegalMoveP(m, g, o);
+			break;
+		default:
+			break;
+		}
+
+		return false;
+	}
+
+	bool isLegalMoveCheck(move& m, grid& g) {
+		if (m.curr.m_piece.color == m.next.m_piece.color && (m.next.m_state & sState::OCCUPIED)) return false;
+		if ((int)m.curr.m_piece.color != g.turn) return false;
+		orientation o = getOrientation(m.curr, m.next);
+
+		{
+			bool temp = true;
+			m.act();
+			if (g.isInCheck())
+				temp = false;
+			m.undo();
+			if (!temp) return temp;
+		}
 
 		switch (m.curr.m_piece.rank) {
 		case pRank::K:
