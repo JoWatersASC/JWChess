@@ -46,3 +46,5 @@ A C++ chess game built using SDL2. This project is still under development, with
 - **En Passant**: Implement the en passant capture move.
 - **Castling**: Implement castling on both sides (king-side and queen-side).
 - **AI Opponent**: Add a basic AI for single-player mode.
+- **Redo**: Add a redo functionality to match undo
+- **Pawn Promotion**

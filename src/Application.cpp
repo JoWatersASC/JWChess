@@ -1,6 +1,8 @@
 #include "Application.hpp"
 
 namespace jwchess {
+#define TICK_INTERVAL 45
+
     static Grid::grid g;
 
 	int Init() {
@@ -22,7 +24,9 @@ namespace jwchess {
 
         SDL_Event e;
         short int state = 0;
-
+        long long count = 0;
+        Uint32 next_time = SDL_GetTicks() + TICK_INTERVAL;
+        
         while (running) {
             while (SDL_PollEvent(&e)) {
                 Events::Handle(e, state);
@@ -35,6 +39,11 @@ namespace jwchess {
                 if (e.type == SDL_WINDOWEVENT) {
                 }
             }
+
+            SDL_Delay(next_time <= SDL_GetTicks() ? 
+                0 : next_time - SDL_GetTicks()
+            );
+            next_time += TICK_INTERVAL;
 
             DisplayManager::Render(state);
         }
