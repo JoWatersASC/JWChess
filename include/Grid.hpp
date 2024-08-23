@@ -8,9 +8,9 @@ namespace jwchess {
 	const short int space_dim = 70;
 
 namespace Grid{
-	static enum class pCol  { B, W, X };
-	static enum class pRank { K, Q, B, N, R, P, X };
-	static enum sState {
+	enum class pCol  { B, W, X };
+	enum class pRank { K, Q, B, N, R, P, X };
+	enum sState {
 		DEFAULT,
 		INACTIVE  = 1 << 0,
 		SELECTED  = 1 << 1,
