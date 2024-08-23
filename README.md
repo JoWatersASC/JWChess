@@ -1,4 +1,3 @@
-
 # JWChess
 A C++ chess game built using SDL2. This project is still under development, with plans to include features like en passant and castling.
 
@@ -13,12 +12,30 @@ A C++ chess game built using SDL2. This project is still under development, with
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - CMake 3.22 or higher
 
+### Unix Users: Installing SDL2
+If you're on a Unix-based system, you may need to install SDL2 before building the project. Use the following commands based on your distribution:
+
+- **Ubuntu/Debian**:
+  ```bash
+  sudo apt-get install libsdl2-dev
+  ```
+
+- **Fedora**:
+  ```bash
+  sudo dnf install SDL2-devel
+  ```
+
+- **Arch Linux**:
+  ```bash
+  sudo pacman -S sdl2
+  ```
+
 ### Building the Project
 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/chess-game.git
+   git clone https://github.com/JoWatersASC/jwchess.git
    cd chess-game
    ```
 
@@ -30,10 +47,17 @@ A C++ chess game built using SDL2. This project is still under development, with
    ```
 
 3. **Run the game**:
-
+   
+   Linux
    ```bash
-   ./build/ChessGame
+   ./build/jwchess
    ```
+
+   Windows
+   ```
+   cd ./build
+   start jwchess.sln
+   ```   
 
 ### Controls
 
@@ -46,5 +70,7 @@ A C++ chess game built using SDL2. This project is still under development, with
 - **En Passant**: Implement the en passant capture move.
 - **Castling**: Implement castling on both sides (king-side and queen-side).
 - **AI Opponent**: Add a basic AI for single-player mode.
-- **Redo**: Add a redo functionality to match undo
-- **Pawn Promotion**
+- **Redo**: Add a redo functionality to match undo.
+- **Pawn Promotion**.
+
+---
