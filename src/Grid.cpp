@@ -1,3 +1,5 @@
+#include<math.h>
+
 #include"Grid.hpp"
 
 namespace jwchess {
@@ -245,7 +247,6 @@ namespace Grid{
 //Static function implementation
 namespace Grid {
 	orientation getOrientation(const space& a, const space& b) {
-#include<math.h>
 
 		orientation out;
 		int ax, ay, bx, by;
