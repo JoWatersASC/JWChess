@@ -25,7 +25,7 @@ else()
     find_package(SDL2 REQUIRED)
     include_directories(${SDL2_INCLUDE_DIRS})
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_image SDL2_ttf)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_image SDL2_ttf SDL2_test)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
