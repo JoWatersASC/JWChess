@@ -35,7 +35,7 @@ If you're on a Unix-based system, you may need to install SDL2 before building t
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/JoWatersASC/jwchess.git
+   git clone https://github.com/JoWatersASC/JWChess.git
    cd chess-game
    ```
 
@@ -50,13 +50,13 @@ If you're on a Unix-based system, you may need to install SDL2 before building t
    
    Linux
    ```bash
-   ./build/jwchess
-   ```
+   ./build/JWChess
+   ```l
 
    Windows
    ```
    cd ./build
-   start jwchess.sln
+   start JWChess.sln
    ```   
 
 ### Controls
