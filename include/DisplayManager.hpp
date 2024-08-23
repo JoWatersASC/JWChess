@@ -87,10 +87,10 @@ namespace DisplayManager {
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 		// Render the title using the SDL test font
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, "Chess Game");
+		//SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, "Chess Game");
 
 		// Render the instruction
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 80, SCREEN_DIM/ 2, "Press any key to start");
+		//SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 80, SCREEN_DIM/ 2, "Press any key to start");
 
 		// Update the screen
 		SDL_RenderPresent(renderer);
@@ -135,10 +135,10 @@ namespace DisplayManager {
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 		// Render the "Game Over" text
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, result.c_str());
+		//SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, result.c_str());
 
 		// Render the instruction to restart or quit
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 150, SCREEN_DIM / 2, "Press 'Enter' key to play again");
+		//SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 150, SCREEN_DIM / 2, "Press 'Enter' key to play again");
 
 		// Update the screen
 		SDL_RenderPresent(renderer);
