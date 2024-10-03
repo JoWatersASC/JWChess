@@ -67,8 +67,6 @@ If you're on a Unix-based system, you may need to install SDL2 before building t
 
 ### Upcoming Features
 
-- **En Passant**: Implement the en passant capture move.
-- **Castling**: Implement castling on both sides (king-side and queen-side).
 - **Redo**: Add a redo functionality to match undo.
 - **Pawn Promotion**.
 - **Network Play**
