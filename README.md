@@ -51,7 +51,7 @@ If you're on a Unix-based system, you may need to install SDL2 before building t
    Linux
    ```bash
    ./build/JWChess
-   ```l
+   ```
 
    Windows
    ```
