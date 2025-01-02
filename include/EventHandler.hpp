@@ -48,7 +48,10 @@ namespace Events {
 					handleBoardUndo();
 				break;
 			case 2:
-				if (e.key.keysym.sym == SDLK_RETURN) state = 1;
+				if (e.key.keysym.sym == SDLK_RETURN) {
+					*s_grid = Grid::grid();
+					state = 1;
+				}
 				break;
 			default:
 				break;

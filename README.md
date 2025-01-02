@@ -70,5 +70,3 @@ If you're on a Unix-based system, you may need to install SDL2 before building t
 - **Redo**: Add a redo functionality to match undo.
 - **Pawn Promotion**.
 - **Network Play**
-
----
