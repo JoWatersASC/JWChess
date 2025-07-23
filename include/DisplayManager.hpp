@@ -1,8 +1,8 @@
 #pragma once
 
-#include<SDL2/SDL.h>
-#include<SDL2/SDL_image.h>
-#include<SDL2/SDL_test_font.h>
+#include<SDL.h>
+#include<SDL_image.h>
+#include<SDL_test_font.h>
 #include<iostream>
 
 #include"Grid.hpp"
@@ -85,8 +85,8 @@ namespace DisplayManager {
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, "Chess Game");
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 80, SCREEN_DIM/ 2, "Press any key to start");
+		// SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, "Chess Game");
+		// SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 80, SCREEN_DIM/ 2, "Press any key to start");
 
 		SDL_RenderPresent(renderer);
 	}
@@ -128,8 +128,8 @@ namespace DisplayManager {
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, result.c_str());
-		SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 150, SCREEN_DIM / 2, "Press 'Enter' key to play again");
+		// SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 50, SCREEN_DIM / 4, result.c_str());
+		// SDLTest_DrawString(renderer, SCREEN_DIM / 2 - 150, SCREEN_DIM / 2, "Press 'Enter' key to play again");
 
 		SDL_RenderPresent(renderer);
 	}
