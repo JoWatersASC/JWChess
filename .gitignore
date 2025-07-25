@@ -1,2 +1,5 @@
 #ignore notes
 notes.md
+
+#ignore clangd cache
+.cache/
