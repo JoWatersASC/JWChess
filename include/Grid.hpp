@@ -1,13 +1,13 @@
 #pragma once
 
-#include<vector>
 #include<set>
-#include<stack>
 
-namespace jwchess {
-	const short int space_dim = 70;
+namespace jwchess
+{
 
-namespace Grid{
+const short int space_dim = 70;
+
+namespace Grid {
 	enum class pCol  { B, W, X };
 	enum class pRank { K, Q, B, N, R, P, X };
 	enum sState {
@@ -79,5 +79,6 @@ namespace Grid{
 
 	bool isLegalMove(move&, grid&);
 	bool isLegalMoveCheck(move&, grid&);
-}
-}
+} // namespace Grid
+
+} // namespace jwchess

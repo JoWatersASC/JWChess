@@ -3,38 +3,35 @@
 #include<SDL.h>
 #include<SDL_image.h>
 #include<SDL_test_font.h>
-#include<iostream>
+#include <string>
 
 #include"Grid.hpp"
 
-namespace jwchess {
+namespace jwchess
+{
+
 namespace DisplayManager {
 #define SCREEN_DIM 700
 
-	static SDL_Window*   window		   = nullptr;
-	static SDL_Renderer* renderer	   = nullptr;
-	static SDL_Texture*	 board_texture = nullptr;
+	static SDL_Window*   window        = nullptr;
+	static SDL_Renderer* renderer      = nullptr;
+	static SDL_Texture*  board_texture = nullptr;
 	static SDL_Texture*  pieces_sheet  = nullptr;
+	static SDL_Rect      board_rect;
 	
-	static Grid::grid*	 s_grid		   = nullptr;
-	static SDL_Rect		 board_rect;
+	static Grid::grid*   s_grid = nullptr;
 
 	inline int Init(SDL_Window*);
 	inline void Render(short int&);
 
 	static SDL_Rect getTextureFromImg(SDL_Texture*&, std::string path); //creates texture from and returns dimensions of an image
-}
 
-namespace DisplayManager {
 	static const short int piece_dim = 16;
 	static void RenderStartScreen();
 	static void RenderBoardScreen(const Grid::grid*);
 	static void RenderGameOverScreen();
-}
-}
 
-namespace jwchess {
-namespace DisplayManager {
+
 	int Init(SDL_Window* _window) {
 		window = _window;
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
@@ -76,9 +73,7 @@ namespace DisplayManager {
 		SDL_QueryTexture(texture, nullptr, nullptr, &texture_width, &texture_height);
 		return { 0, 0, texture_width, texture_height };
 	}
-}
 
-namespace DisplayManager {
 	void RenderStartScreen() {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
@@ -133,5 +128,6 @@ namespace DisplayManager {
 
 		SDL_RenderPresent(renderer);
 	}
-}
-}
+} // namespace DisplayManager
+
+} // namespace jwchess

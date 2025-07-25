@@ -1,12 +1,14 @@
 #pragma once
 
-#include"DisplayManager.hpp"
-#include"EventHandler.hpp"
 
-namespace jwchess {
-	static SDL_Window* window;
+#include "SDL_video.h"
+namespace jwchess
+{
 
-	int  Init();
-	void Run();
-	int  End();
-}
+static SDL_Window* window;
+
+int  Init();
+void Run();
+int  End();
+
+} // namespace jwchess
