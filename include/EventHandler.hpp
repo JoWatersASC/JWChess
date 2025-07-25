@@ -1,12 +1,14 @@
 #pragma once
 
 #include<SDL2/SDL.h>
+#include <stack>
 #include"Grid.hpp"
-#include"DisplayManager.hpp"
 
-namespace jwchess {
+namespace jwchess
+{
+
 //Forward Declarations
-namespace Events{
+namespace Events {
 	static SDL_Window* window = nullptr;
 	static Grid::grid* s_grid = nullptr;
 
@@ -17,10 +19,8 @@ namespace Events{
 	static void handleBoardUndo();
 	static int getIndexFromCoords(int& _x, int& _y);
 	static std::stack<Grid::move> movestk;
-}
 
 //Implementations
-namespace Events {
 	int Init(SDL_Window* _window, Grid::grid* _grid) {
 		window = _window;
 		s_grid = _grid;
@@ -106,5 +106,6 @@ namespace Events {
 
 		return Grid::getSpace(_y, _x);
 	}
-}
-}
+} // namespace Events
+
+} // namespace jwchess

@@ -2,19 +2,21 @@
 
 #include"Grid.hpp"
 
-namespace jwchess {
+namespace jwchess
+{
+
 //Forward Declarations
 namespace Grid {
 	namespace {
 	struct orientation {
-		bool forward	= false;
-		bool backward	= false;
-		bool left		= false;
-		bool right		= false;
+		bool forward    = false;
+		bool backward   = false;
+		bool left       = false;
+		bool right      = false;
 		bool horizontal = false;
-		bool vertical	= false;
-		bool diagonal	= false;
-		bool l			= false;
+		bool vertical   = false;
+		bool diagonal   = false;
+		bool l          = false;
 
 		short int dist  = 3;
 	};
@@ -27,10 +29,10 @@ namespace Grid {
 	static bool isLegalMoveN(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveB(const move& m, const grid& g, const orientation& o);
 	static bool isLegalMoveP(const move& m, const grid& g, const orientation& o);
-}
+} // namespace Grid
 
 //Member function implementation
-namespace Grid{
+namespace Grid {
 	void move::act() {
 		if (curr.m_state & sState::VACANT || &curr == &next) return;
 
@@ -242,7 +244,7 @@ namespace Grid{
 			c++;
 		}
 	}
-}
+} // namespace Grid
 
 //Static function implementation
 namespace Grid {
@@ -355,5 +357,6 @@ namespace Grid {
 
 		return ((o.dist == 1) || !m.curr.m_piece.moved) && !(m.next.m_state & sState::OCCUPIED);
 	}
-}
-}
+} // namespace Grid
+
+} // namespace jwchess
